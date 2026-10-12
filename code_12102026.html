@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🟣 RAVENA HUB — Steal an Egg</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --black: #050505;
+            --darker: #0f0f0f;
+            --neon-purple: #cc00ff;
+            --purple-dark: #7b00cc;
+            --purple-glow: rgba(204, 0, 255, 0.35);
+            --white: #ffffff;
+            --gray: #b0b0b0;
+            --success: #00ff88;
+            --warning: #ffcc00;
+            --error: #ff4444;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0f 0%, #1a0a2e 50%, #0a0a0f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            color: var(--white);
+        }
+
+        /* ===== MAIN WINDOW ===== */
+        .hub-window {
+            background: var(--darker);
+            border: 1px solid var(--neon-purple);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 950px;
+            box-shadow: 0 0 25px var(--purple-glow), inset 0 0 60px rgba(204, 0, 255, 0.05);
+            overflow: hidden;
+            animation: windowOpen 0.4s ease-out;
+        }
+
+        @keyframes windowOpen {
+            from { opacity: 0; transform: scale(0.95) translateY(10px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        /* ===== HEADER ===== */
+        .hub-header {
+            background: linear-gradient(90deg, #1a0a2e, #2b104d, #1a0a2e);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--purple-dark);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--neon-purple);
+            text-shadow: 0 0 10px var(--neon-purple);
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: var(--gray);
+            border-left: 1px solid var(--purple-dark);
+            padding-left: 10px;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .win-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: none;
+            background: rgba(80, 0, 120, 0.3);
+            color: var(--white);
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .win-btn:hover {
+            background: var(--neon-purple);
+            box-shadow: 0 0 12px var(--neon-purple);
+        }
+
+        .close-btn:hover {
+            background: var(--error);
+            box-shadow: 0 0 12px var(--error);
+        }
+
+        /* ===== TABS NAVIGATION ===== */
+        .tabs-container {
+            display: flex;
+            overflow-x: auto;
+            background: rgba(30, 10, 50, 0.4);
+            border-bottom: 1px solid #2a1040;
+            scrollbar-width: thin;
+            scrollbar-color: var(--purple-dark) transparent;
+        }
+
+        .tabs-container::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .tabs-container::-webkit-scrollbar-thumb {
+            background: var(--purple-dark);
+            border-radius: 2px;
+        }
+
+        .tab-btn {
+            padding: 12px 16px;
+            background: transparent;
+            border: none;
+            color: var(--gray);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--neon-purple);
+            background: rgba(204, 0, 255, 0.06);
+        }
+
+        .tab-btn.active {
+            color: var(--neon-purple);
+            border-bottom: 2px solid var(--neon-purple);
+            text-shadow: 0 0 6px var(--purple-glow);
+        }
+
+        /* ===== CONTENT AREA ===== */
+        .content-area {
+            padding: 22px;
+            min-height: 450px;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        h2 {
+            font-size: 19px;
+            color: var(--neon-purple);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        h3 {
+            font-size: 15px;
+            color: #ddd;
+            margin: 16px 0 10px;
+        }
+
+        /* ===== CARDS & BOXES ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-bottom: 22px;
+        }
+
+        .stat-card {
+            background: rgba(40, 15, 70, 0.35);
+            border: 1px solid #3a155c;
+            border-radius: 10px;
+            padding: 15px;
+            transition: 0.3s ease;
+        }
+
+        .stat-card:hover {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 10px var(--purple-glow);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray);
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        .purple-text { color: var(--neon-purple); }
+        .green-text { color: var(--success); }
+        .yellow-text { color: var(--warning); }
+        .red-text { color: var(--error); }
+
+        .info-box {
+            background: rgba(30, 10, 60, 0.25);
+            border-left: 3px solid var(--neon-purple);
+            padding: 12px 16px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 18px;
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .warning-box {
+            border-left-color: var(--warning);
+            background: rgba(60, 45, 0, 0.2);
+        }
+
+        .error-box {
+            border-left-color: var(--error);
+            background: rgba(70, 0, 20, 0.2);
+        }
+
+        .success-box {
+            border-left-color: var(--success);
+            background: rgba(0, 60, 30, 0.2);
+        }
+
+        /* ===== SEARCH & FILTERS ===== */
+        .search-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        input, select {
+            background: #1a0f2b;
+            border: 1px solid #442070;
+            border-radius: 6px;
+            padding: 9px 14px;
+            color: var(--white);
+            font-size: 14px;
+            outline: none;
+            transition: 0.25s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 8px var(--purple-glow);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            padding: 9px 18px;
+            border-radius: 6px;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--purple-dark), var(--neon-purple));
+            color: white;
+            box-shadow: 0 2px 8px rgba(204, 0, 255, 0.25);
+        }
+
+        .btn-primary:hover {
+            box-shadow: 0 0 15px var(--neon-purple);
+            transform: translateY(-1px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #009955, #00cc66);
+            color: white;
+        }
+
+        .btn-success:hover {
+            box-shadow: 0 0 12px var(--success);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #aa2222, #dd3333);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 0 12px var(--error);
+        }
+
+        .btn-secondary {
+            background: #2a1545;
+            color: #ddd;
+            border: 1px solid #442070;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--neon-purple);
+            color: var(--neon-purple);
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+
+        /* ===== TABLE / ITEM LIST ===== */
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #2a1045;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th {
+            background: #251040;
+            padding: 12px 14px;
+            text-align: left;
+            color: var(--neon-purple);
+            font-weight: 600;
+            border-bottom: 1px solid #3a155c;
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #221038;
+            color: #ccc;
+        }
+
+        tr:hover td {
+            background: rgba(80, 20, 120, 0.15);
+        }
+
+        /* ===== RARITY BADGES ===== */
+        .rarity {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+        .r-common { background: #444; color: #ddd; }
+        .r-uncommon { background: #005522; color: #99ffbb; }
+        .r-rare { background: #004488; color: #aaddff; }
+        .r-epic { background: #550099; color: #e0bbff; }
+        .r-legendary { background: #aa7700; color: #fff8cc; box-shadow: 0 0 6px #ffcc0044; }
+        .r-mythic { background: #880022; color: #ffccdd; box-shadow: 0 0 6px #ff004444; }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-bar {
+            height: 10px;
+            background: #221038;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--purple-dark), var(--neon-purple));
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        /* ===== SETTINGS ===== */
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #2a1045;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #333;
+            border-radius: 24px;
+            transition: 0.3s;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: '';
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+
+        input:checked + .toggle-slider {
+            background: var(--neon-purple);
+            box-shadow: 0 0 8px var(--neon-purple);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        input[type="range"] {
+            width: 140px;
+        }
+
+        /* ===== BOTTOM STATUS BAR ===== */
+        .status-bar {
+            background: rgba(20, 5, 40, 0.6);
+            border-top: 1px solid #2a1045;
+            padding: 12px 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 13px;
+        }
+
+        .status-text {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .dot-green { background: var(--success); box-shadow: 0 0 6px var(--success); }
+        .dot-yellow { background: var(--warning); box-shadow: 0 0 6px var(--warning); }
+        .dot-red { background: var(--error); box-shadow: 0 0 6px var(--error); }
+        .dot-purple { background: var(--neon-purple); box-shadow: 0 0 6px var(--neon-purple); }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            body { padding: 8px; }
+            .content-area { padding: 14px; }
+            .logo { font-size: 18px; }
+            .subtitle { display: none; }
+            .tabs-container { justify-content: flex-start; }
+            .stat-card { padding: 12px; }
+            .status-bar { flex-direction: column; align-items: flex-start; }
+        }
+
+        /* ===== SELECTED ITEM HIGHLIGHT ===== */
+        tr.selected td {
+            background: rgba(120, 0, 255, 0.12);
+            border-left: 3px solid var(--neon-purple);
+        }
+    </style>
+</head>
+<body>
+
+<div class="hub-window">
+    <!-- ========== HEADER ========== -->
+    <div class="hub-header">
+        <div class="logo-area">
+            <span class="logo">🟣 RAVENA HUB</span>
+            <span class="subtitle">STEAL AN EGG · v1.0.0</span>
+        </div>
+        <div class="window-controls">
+            <button class="win-btn" title="Minimizar">—</button>
+            <button class="win-btn" title="Restaurar">☐</button>
+            <button class="win-btn close-btn" title="Fechar" onclick="closeHub()">✕</button>
+        </div>
+    </div>
+
+    <!-- ========== TABS NAVIGATION ========== -->
+    <div class="tabs-container">
+        <button class="tab-btn active" data-tab="home">🏠 Início</button>
+        <button class="tab-btn" data-tab="detector">🥚 Egg Detector</button>
+        <button class="tab-btn" data-tab="selector">🎯 Egg Selector</button>
+        <button class="tab-btn" data-tab="autocollect">🤖 Auto Collect</button>
+        <button class="tab-btn" data-tab="spawner">✨ Egg Spawner</button>
+        <button class="tab-btn" data-tab="legendary">👑 Legendary</button>
+        <button class="tab-btn" data-tab="movement">🚀 Target Movement</button>
+        <button class="tab-btn" data-tab="return">🏡 Return To Base</button>
+        <button class="tab-btn" data-tab="collection">📊 Collection</button>
+        <button class="tab-btn" data-tab="settings">⚙️ Settings</button>
+    </div>
+
+    <!-- ========== CONTENT AREA ========== -->
+    <div class="content-area">
+
+        <!-- ===== TAB: HOME ===== -->
+        <div id="home" class="tab-content active">
+            <h2>🏠 Painel Principal</h2>
+            
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">🥚 Ovos Encontrados</div>
+                    <div class="stat-value purple-text" id="found-count">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">📦 Itens Disponíveis</div>
+                    <div class="stat-value" id="available-count">—</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🎯 Último Alvo</div>
+                    <div class="stat-value" style="font-size:15px" id="last-target">Nenhum</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">🤖 Coleta Automática</div>
+                    <div class="stat-value green-text" style="font-size:15px">⏸️ Parada</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                ✅ <strong>Sistema Pronto!</strong> Conecte-se ao jogo para carregar os dados dos ovos. Selecione uma aba acima para começar.
+            </div>
+
+            <h3>⚡ Acesso Rápido</h3>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="switchTab('detector')">🥚 Ver Catálogo</button>
+                <button class="btn btn-secondary" onclick="switchTab('selector')">🎯 Selecionar Alvo</button>
+                <button class="btn btn-success" onclick="switchTab('autocollect')">🤖 Coleta</button>
+                <button class="btn btn-secondary" onclick="switchTab('collection')">📊 Minha Coleção</button>
+            </div>
+
+            <h3>📋 Status da Sessão</h3>
+            <p style="color:#aaa; font-size:14px; line-height:1.8;">
+                📅 Iniciado em: <span id="session-time">12/10/2026 — 20:05</span><br>
+                🔄 Última atualização: <span id="last-update">—</span><br>
+                🟢 Conexão: Aguardando dados do jogo
+            </p>
+        </div>
+
+        <!-- ===== TAB: EGG DETECTOR ===== -->
+        <div id="detector" class="tab-content">
+            <h2>🥚 Egg Detector — Catálogo de Ovos</h2>
+
+            <div class="search-bar">
+                <input type="text" id="search-egg" placeholder="Pesquisar ovo pelo nome..." style="flex:1; min-width:180px;">
+                <select id="filter-rarity">
+                    <option value="all">Todas as Raridades</option>
+                    <option value="common">Comum</option>
+                    <option value="uncommon">Incomum</option>
+                    <option value="rare">Raro</option>
+                    <option value="epic">Épico</option>
+                    <option value="legendary">Lendário</option>
+                    <option value="mythic">Mítico</option>
+                </select>
+                <select id="sort-by">
+                    <option value="name">Ordenar por: Nome</option>
+                    <option value="value-asc">Valor: Crescente</option>
+                    <option value="value-desc">Valor: Decrescente</option>
+                    <option value="rarity">Raridade</option>
+                </select>
+                <button class="btn btn-secondary" onclick="refreshList()">🔄 Atualizar</button>
+            </div>
+
+            <div class="info-box" id="list-status">
+                📋 Lista carregada — 4 itens demonstrativos exibidos
+            </div>
+
+            <div class="table-wrapper">
+                <table id="egg-table">
+                    <thead>
+                        <tr>
+                            <th>🥚 Ovo</th>
+                            <th>Raridade</th>
+                            <th>Valor</th>
+                            <th>Status</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="egg-list">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== TAB: EGG SELECTOR ===== -->
+        <div id="selector" class="tab-content">
+            <h2>🎯 Egg Selector — Seleção de Alvo</h2>
+
+            <div class="search-bar">
+                <label style="color:#aaa; font-size:14px; display:flex; align-items:center; gap:6px;">
+                    <input type="checkbox" id="only-legendary"> Apenas Lendários
+                </label>
+                <select id="sel-rarity">
+                    <option value="all">Todas as Raridades</option>
+                    <option value="common">Comum</option>
+                    <option value="uncommon">Incomum</option>
+                    <option value="rare">Raro</option>
+                    <option value="epic">Épico</option>
+                    <option value="legendary">Lendário</option>
+                    <option value="mythic">Mítico</option>
+                </select>
+                <input type="number" id="min-value" placeholder="Valor Mínimo" style="max-width:120px;">
+                <input type="number" id="max-value" placeholder="Valor Máximo" style="max-width:120px;">
+            </div>
+
+            <h3>📋 Alvo Selecionado</h3>
+            <div class="info-box warning-box" id="selected-info">
+                ❌ <strong>Nenhum ovo selecionado.</strong> Escolha um item no catálogo primeiro.
+            </div>
+
+            <div class="stat-card" id="target-details" style="display:none; margin-bottom:18px;">
+                <h3 id="target-name" style="margin-top:0">—</h3>
+                <p style="color:#aaa; font-size:14px; line-height:1.8;">
+                    <strong>Raridade:</strong> <span id="target-rarity">—</span><br>
+                    <strong>Valor:</strong> <span id="target-value">—</span><br>
+                    <strong>Disponibilidade:</strong> <span id="target-avail">—</span>
+                </p>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" id="btn-confirm" onclick="confirmSelection()" disabled>✅ CONFIRMAR SELEÇÃO</button>
+                <button class="btn btn-secondary" onclick="clearSelection()">🗑️ LIMPAR SELEÇÃO</button>
+                <button class="btn btn-secondary" id="btn-details" onclick="showDetails()" disabled>📄 DETALHES</button>
+            </div>
+        </div>
+
+        <!-- ===== TAB: AUTO COLLECT ===== -->
+        <div id="autocollect" class="tab-content">
+            <h2>🤖 Auto Collect — Coleta Automatizada</h2>
+
+            <div class="warning-box">
+                ⚙️ <strong>Status:</strong> Funcionalidade requer acesso autorizado aos controles do jogo. Abaixo estão os controles disponíveis.
+            </div>
+
+            <h3>🎯 Alvo</h3>
+            <p style="color:#aaa; font-size:14px;">Ovo selecionado: <strong id="collect-target">Nenhum — vá em Egg Selector primeiro</strong></p>
+
+            <h3>⚙️ Configurações</h3>
+            <div class="setting-row">
+                <span>Coletar apenas raridade ≥</span>
+                <select id="min-rarity-collect">
+                    <option value="any">Qualquer</option>
+                    <option value="common">Comum</option>
+                    <option value="uncommon">Incomum</option>
+                    <option value="rare">Raro</option>
+                    <option value="epic">Épico</option>
+                    <option value="legendary">Lendário</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <span>Parar ao encontrar item raro</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked id="stop-rare">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <span>Tempo limite por busca (segundos)</span>
+                <input type="number" value="60" min="5" max="300" id="time-limit">
+            </div>
+
+            <h3>🎮 Controles</h3>
+            <div class="btn-group">
+                <button class="btn btn-success" id="btn-start-collect" onclick="startCollect()">▶️ START</button>
+                <button class="btn btn-danger" id="btn-stop-collect" onclick="stopCollect()" disabled>⏹️ STOP</button>
+            </div>
+
+            <h3>📊 Progresso</h3>
+            <p style="color:#aaa; font-size:14px;">Estado: <span id="collect-status">⏸️ Aguardando início</span></p>
+            <div class="progress-bar"><div class="progress-fill" id="collect-progress"></div></div>
+            <p style="font-size:13px; color:#888; margin-top:6px;">Mensagem: <span id="collect-msg">Pronto para iniciar quando conectado</span></p>
+        </div>
+
+        <!-- ===== TAB: EGG SPAWNER ===== -->
+        <div id="spawner" class="tab-content">
+            <h2>✨ Egg Spawner — Surgimento de Ovos</h2>
+            
+            <div class="error-box">
+                🚫 <strong>Não Disponível.</strong> Esta funcionalidade depende de suporte do servidor/jogo e não está ativa no momento. Não é possível criar ovos através desta interface.
+            </div>
+
+            <h3>📌 Configurações (apenas exibição)</h3>
+            <table style="margin-bottom:20px;">
+                <tr><td style="color:#aaa;">Tipo de Ovo</td><td>—</td></tr>
+                <tr><td style="color:#aaa;">Raridade</td><td>—</td></tr>
+                <tr><td style="color:#aaa;">Quantidade Máxima</td><td>—</td></tr>
+                <tr><td style="color:#aaa;">Intervalo de Surgimento</td><td>—</td></tr>
+                <tr><td style="color:#aaa;">Estado</td><td><span class="red-text">Indisponível</span></td></tr>
+            </table>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" disabled>▶️ ATIVAR</button>
+                <button class="btn btn-secondary" disabled>⏹️ DESATIVAR</button>
+            </div>
+
+            <p style="font-size:13px; color:#666; margin-top:16px;">📌 Referência externa: *Egg Spawner* — funcionalidade de terceiros, documentada apenas como referência.</p>
+        </div>
+
+        <!-- ===== TAB: LEGENDARY ===== -->
+        <div id="legendary" class="tab-content">
+            <h2>👑 Ovos Lendários & Superiores</h2>
+
+            <div class="search-bar">
+                <button class="btn btn-sm btn-primary" onclick="filterLegendary('all')">Todos</button>
+                <button class="btn btn-sm btn-secondary" onclick="filterLegendary('legendary')">Apenas Lendários</button>
+                <button class="btn btn-sm btn-secondary" onclick="filterLegendary('mythic')">Incluir Míticos</button>
+                <button class="btn btn-sm btn-secondary" onclick="refreshLegendary()">🔄 Atualizar</button>
+            </div>
+
+            <div class="info-box">
+                📋 Itens confirmados no catálogo — disponibilidade verificada no momento da atualização.
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Raridade</th>
+                            <th>Valor Estimado</th>
+                            <th>Disponibilidade</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="legendary-list">
+                        <!-- Populated by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ===== TAB: TARGET MOVEMENT ===== -->
+        <div id="movement" class="tab-content">
+            <h2>🚀 Target Movement — Navegação até o Alvo</h2>
+            
+            <div class="error-box">
+                🚫 <strong>Sem suporte detectado.</strong> A funcionalidade de movimentação automática não está disponível neste ambiente.
+            </div>
+
+            <table style="margin-bottom:20px;">
+                <tr><td style="color:#aaa;">Alvo Selecionado</td><td id="move-target">Nenhum</td></tr>
+                <tr><td style="color:#aaa;">Distância até o Alvo</td><td>—</td></tr>
+                <tr><td style="color:#aaa;">Estado da Navegação</td><td><span class="red-text">Inativa</span></td></tr>
+            </table>
+
+            <div class="btn-group">
+                <button class="btn btn-success" disabled>▶️ START</button>
+                <button class="btn btn-danger" disabled>⏹️ STOP</button>
+            </div>
+
+            <p style="font-size:13px; color:#666; margin-top:16px;">📌 Referência externa: *Shoot To Target Egg / Go-Stop* — conceito documentado como referência, sem operação ativa.</p>
+        </div>
+
+        <!-- ===== TAB: RETURN TO BASE ===== -->
+        <div id="return" class="tab-content">
+            <h2>🏡 Return To Base — Retorno à Base</h2>
+            
+            <div class="error-box">
+                🚫 <strong>Ação não suportada.</strong> O ambiente atual não oferece suporte à função de retorno automático à base.
+            </div>
+
+            <table style="margin-bottom:20px;">
+                <tr><td style="color:#aaa;">Base Identificada</td><td>—</td></tr>
+                <tr><td style="color:#aaa;">Retorno Agendado Após Tarefa</td><td>❌ Indisponível</td></tr>
+                <tr><td style="color:#aaa;">Estado</td><td><span class="red-text">Indisponível</span></td></tr>
+            </table>
+
+            <div class="btn-group">
+                <button class="btn btn-primary" disabled>🏡 RETORNAR AGORA</button>
+                <button class="btn btn-secondary" disabled>❌ CANCELAR</button>
+            </div>
+
+            <p style="font-size:13px; color:#666; margin-top:16px;">📌 Referência externa: *Auto Return to Base* — apenas documentação de referência.</p>
+        </div>
+
+        <!-- ===== TAB: COLLECTION ===== -->
+        <div id="collection" class="tab-content">
+            <h2>📊 Minha Coleção — Registros & Estatísticas</h2>
+
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-label">🥚 Ovos Coletados</div><div class="stat-value">0</div></div>
+                <div class="stat-card"><div class="stat-label">📦 Itens Descobertos</div><div class="stat-value">0 / ?</div></div>
+                <div class="stat-card"><div class="stat-label">📈 Progresso</div><div class="stat-value purple-text">0%</div></div>
+            </div>
+
+            <h3>📊 Por Raridade</h3>
+            <table style="margin-bottom:20px;">
+                <tr><td><span class="rarity r-common">Comum</span></td><td style="text-align:right;">0</td></tr>
+                <tr><td><span class="rarity r-uncommon">Incomum</span></td><td style="text-align:right;">0</td></tr>
+                <tr><td><span class="rarity r-rare">Raro</span></td><td style="text-align:right;">0</td></tr>
+                <tr><td><span class="rarity r-epic">Épico</span></td><td style="text-align:right;">0</td></tr>
+                <tr><td><span class="rarity r-legendary">Lendário</span></td><td style="text-align:right;">0</td></tr>
+                <tr><td><span class="rarity r-mythic">Mítico</span></td><td style="text-align:right;">0</td></tr>
+            </table>
+
+            <h3>🔍 Pesquisar Histórico</h3>
+            <div class="search-bar">
+                <input type="text" placeholder="Buscar por nome, data ou raridade..." style="flex:1;">
+                <button class="btn btn-primary">🔍 Buscar</button>
+            </div>
+
+            <h3>📝 Histórico de Atividades</h3>
+            <div class="info-box">
+                Nenhuma atividade registrada nesta sessão. Conecte-se ao jogo para começar a coletar dados.
+            </div>
+        </div>
+
+        <!-- ===== TAB: SETTINGS ===== -->
+        <div id="settings" class="tab-content">
+            <h2>⚙️ Configurações do Sistema</h2>
+
+            <h3>🎨 Interface</h3>
+            <div class="setting-row">
+                <span>Tamanho do Painel</span>
+                <input type="range" min="60" max="100" value="100" id="ui-size">
+            </div>
+            <div class="setting-row">
+                <span>Intensidade do Brilho Roxo</span>
+                <input type="range" min="0" max="100" value="70" id="glow-intensity">
+            </div>
+            <div class="setting-row">
+                <span>Transparência do Fundo</span>
+                <input type="range" min="50" max="100" value="90" id="bg-opacity">
+            </div>
+            <div class="setting-row">
+                <span>Animações Ativadas</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked id="anim-enabled">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <span>Exibir Valor dos Ovos</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked id="show-value">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <h3>⚙️ Funcionamento</h3>
+            <div class="setting-row">
+                <span>Atualização Automática do Catálogo (30s)</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked id="auto-refresh">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <span>Ordenação Padrão</span>
+                <select id="default-sort">
+                    <option value="name">Nome</option>
+                    <option value="value-asc" selected>Valor Crescente</option>
+                    <option value="value-desc">Valor Decrescente</option>
+                    <option value="rarity">Raridade</option>
+                </select>
+            </div>
+            <div class="setting-row">
+                <span>Confirmar antes de ações importantes</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked id="confirm-actions">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <div class="btn-group" style="margin-top:24px;">
+                <button class="btn btn-primary" onclick="saveSettings()">💾 SALVAR CONFIGURAÇÕES</button>
+                <button class="btn btn-secondary" onclick="resetSettings()">🔄 RESTAURAR PADRÕES</button>
+            </div>
+            <p id="save-msg" style="color:var(--success); font-size:13px; margin-top:10px; display:none;">✅ Configurações salvas com sucesso!</p>
+        </div>
+    </div>
+
+    <!-- ========== BOTTOM STATUS BAR ========== -->
+    <div class="status-bar">
+        <div class="status-text">
+            <span><span class="status-dot dot-green"></span> Sistema: <strong>Pronto</strong></span>
+            <span><span class="status-dot dot-purple"></span> Coleta: <span id="bottom-collect-status">Parada</span></span>
+            <span><span class="status-dot dot-green"></span> Última atualização: <span id="bottom-time">—</span></span>
+        </div>
+        <div>
+            <button class="btn btn-sm btn-success" id="global-start" onclick="globalStart()">▶️ INICIAR</button>
+            <button class="btn btn-sm btn-danger" id="global-stop" onclick="globalStop()">⏹️ PARAR TUDO</button>
+            <button class="btn btn-sm btn-secondary" onclick="refreshAll()">🔄 ATUALIZAR</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ========== DADOS DE DEMONSTRAÇÃO ==========
+const eggsData = [
+    { id: 1, name: 'Ovo Comum', rarity: 'common', value: 50, available: true },
+    { id: 2, name: 'Ovo Brilhante', rarity: 'uncommon', value: 180, available: true },
+    { id: 3, name: 'Ovo de Pedra', rarity: 'common', value: 40, available: true },
+    { id: 4, name: 'Ovo Cristal', rarity: 'rare', value: 750, available: true },
+    { id: 5, name: 'Ovo Dourado', rarity: 'legendary', value: 5000, available: false },
+    { id: 6, name: 'Ovo Estelar', rarity: 'legendary', value: 8500, available: true },
+    { id: 7, name: 'Ovo Cósmico', rarity: 'mythic', value: 25000, available: false },
+    { id: 8, name: 'Ovo das Sombras', rarity: 'epic', value: 2200, available: true },
+];
+
+const rarityLabels = {
+    common: { text: 'Comum', class: 'r-common' },
+    uncommon: { text: 'Incomum', class: 'r-uncommon' },
+    rare: { text: 'Raro', class: 'r-rare' },
+    epic: { text: 'Épico', class: 'r-epic' },
+    legendary: { text: 'Lendário', class: 'r-legendary' },
+    mythic: { text: 'Mítico', class: 'r-mythic' },
+};
+
+let selectedEgg = null;
+let isCollecting = false;
+
+// ========== INICIALIZAÇÃO ==========
+document.addEventListener('DOMContentLoaded', () => {
+    renderEggList();
+    renderLegendaryList();
+    updateTime();
+    setInterval(updateTime, 60000);
+});
+
+function updateTime() {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+    document.getElementById('last-update').textContent = timeStr;
+    document.getElementById('bottom-time').textContent = timeStr;
+}
+
+// ========== NAVEGAÇÃO DE ABAS ==========
+document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const tabId = btn.getAttribute('data-tab');
+        switchTab(tabId);
+    });
+});
+
+function switchTab(tabId) {
+    // Desativar todas as abas
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    
+    // Ativar selecionada
+    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+}
+
+// ========== RENDERIZAR LISTA DE OVOS ==========
+function renderEggList(filter='all', search='') {
+    const list = document.getElementById('egg-list');
+    list.innerHTML = '';
+    
+    let filtered = eggsData;
+    
+    // Filtro de raridade
+    if(filter !== 'all') {
+        filtered = filtered.filter(e => e.rarity === filter);
+    }
+    
+    // Busca por nome
+    if(search) {
+        filtered = filtered.filter(e => e.name.toLowerCase().includes(search.toLowerCase()));
+    }
+    
+    filtered.forEach(egg => {
+        const rInfo = rarityLabels[egg.rarity];
+        const row = document.createElement('tr');
+        row.id = `egg-row-${egg.id}`;
+        row.innerHTML = `
+            <td>🥚 ${egg.name}</td>
+            <td><span class="rarity ${rInfo.class}">${rInfo.text}</span></td>
+            <td>${egg.value.toLocaleString('pt-BR')}</td>
+            <td>${egg.available ? '<span class="green-text">✅ Disponível</span>' : '<span class="red-text">❌ Indisponível</span>'}</td>
+            <td>
+                <button class="btn btn-sm ${egg.available ? 'btn-primary' : 'btn-secondary'}" 
+                        onclick="selectEgg(${egg.id})" ${!egg.available ? 'disabled' : ''}>
+                    ${egg.available ? 'SELECIONAR' : 'INDISPONÍVEL'}
+                </button>
+            </td>
+        `;
+        list.appendChild(row);
+    });
+    
+    updateListStatus(filtered.length);
+}
+
+function updateListStatus(count) {
+    const box = document.getElementById('list-status');
+    if(count === 0) {
+        box.className = 'info-box warning-box';
+        box.innerHTML = '🔍 Nenhum ovo encontrado com os filtros atuais.';
+    } else {
+        box.className = 'info-box';
+        box.innerHTML = `📋 ${count} ovo(s) encontrado(s) — clique em SELECIONAR para escolher um alvo`;
+    }
+    document.getElementById('found-count').textContent = count;
+}
+
+// Pesquisa em tempo real
+document.getElementById('search-egg').addEventListener('input', e => {
+    const search = e.target.value;
+    const rarity = document.getElementById('filter-rarity').value;
+    renderEggList(rarity, search);
+});
+
+document.getElementById('filter-rarity').addEventListener('change', e => {
+    const search = document.getElementById('search-egg').value;
+    renderEggList(e.target.value, search);
+});
+
+function refreshList() {
+    renderEggList();
+    document.getElementById('search-egg').value = '';
+    document.getElementById('filter-rarity').value = 'all';
+    document.getElementById('list-status').innerHTML = '🔄 Lista atualizada com sucesso!';
+    document.getElementById('list-status').className = 'info-box success-box';
+    setTimeout(() => {
+        document.getElementById('list-status').className = 'info-box';
+        document.getElementById('list-status').innerHTML = '📋 Lista carregada — ' + eggsData.length + ' itens exibidos';
+    }, 1500);
+}
+
+// ========== SELEÇÃO DE OVO ==========
+function selectEgg(id) {
+    selectedEgg = eggsData.find(e => e.id === id);
+    if(!selectedEgg) return;
+    
+    // Remover destaque anterior
+    document.querySelectorAll('#egg-list tr').forEach(r => r.classList.remove('selected'));
+    document.getElementById(`egg-row-${id}`).classList.add('selected');
+    
+    // Atualizar aba Selector
+    updateSelectedDisplay();
+    
+    // Atualizar home
+    document.getElementById('last-target').textContent = selectedEgg.name;
+    
+    // Atualizar auto collect
+    document.getElementById('collect-target').textContent = 
+        `${selectedEgg.name} — ${rarityLabels[selectedEgg.rarity].text} — ${selectedEgg.value.toLocaleString('pt-BR')}`;
+    
+    // Atualizar movement
+    document.getElementById('move-target').textContent = selectedEgg.name;
+    
+    switchTab('selector');
+}
+
+function updateSelectedDisplay() {
+    if(!selectedEgg) {
+        document.getElementById('selected-info').style.display = 'block';
+        document.getElementById('target-details').style.display = 'none';
+        document.getElementById('btn-confirm').disabled = true;
+        document.getElementById('btn-details').disabled = true;
+        return;
+    }
+    
+    const rInfo = rarityLabels[selectedEgg.rarity];
+    document.getElementById('selected-info').style.display = 'none';
+    document.getElementById('target-details').style.display = 'block';
+    document.getElementById('target-name').innerHTML = `🥚 ${selectedEgg.name}`;
+    document
